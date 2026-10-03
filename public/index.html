@@ -1,1 +1,2907 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+  >
 
+  <meta name="theme-color" content="#0A0B10">
+
+  <title>Harf Demo</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #08090D;
+      color: #FFFFFF;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 620px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        18px
+        18px
+        18px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* ========================================
+       HEADER
+    ======================================== */
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .page-back {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: #151722;
+      border: 1px solid #282B3A;
+      color: #FFFFFF;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .page-header-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+
+      display: grid;
+      place-items: center;
+
+      background:
+        linear-gradient(
+          145deg,
+          #8E7CFF,
+          #5B4DDB
+        );
+
+      box-shadow:
+        0 12px 30px rgba(110, 91, 255, 0.28);
+
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-sub {
+      color: #858A9A;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+
+      display: grid;
+      place-items: center;
+
+      background:
+        linear-gradient(
+          145deg,
+          #23263A,
+          #11131D
+        );
+
+      border: 1px solid #303449;
+
+      color: #B9AEFF;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    /* ========================================
+       BALANCE
+    ======================================== */
+
+    .balance-card {
+      border-radius: 28px;
+      padding: 24px;
+
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(122, 105, 255, 0.24),
+          transparent 42%
+        ),
+        linear-gradient(
+          145deg,
+          #171A29,
+          #0D0F17
+        );
+
+      border: 1px solid #272A3B;
+
+      box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .balance-label {
+      color: #9599A9;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .balance-value {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+    }
+
+    .balance-unit {
+      margin-top: 8px;
+      color: #A1A4B3;
+      font-size: 13px;
+    }
+
+    .balance-row {
+      margin-top: 20px;
+
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      min-height: 49px;
+      border-radius: 16px;
+
+      color: #FFFFFF;
+
+      background:
+        linear-gradient(
+          135deg,
+          #8271FF,
+          #5B4CE0
+        );
+
+      font-weight: 800;
+
+      box-shadow:
+        0 11px 25px rgba(102, 82, 240, 0.24);
+    }
+
+    .secondary-btn {
+      flex: 1;
+      min-height: 49px;
+      border-radius: 16px;
+
+      background: #171A25;
+      color: #D6D8E2;
+
+      border: 1px solid #292D3D;
+      font-weight: 700;
+    }
+
+    /* ========================================
+       HOME
+    ======================================== */
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 28px 2px 12px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .section-muted {
+      color: #777C8D;
+      font-size: 12px;
+    }
+
+    .task-card {
+      position: relative;
+
+      padding: 21px;
+      border-radius: 25px;
+
+      background: #11131B;
+      border: 1px solid #242735;
+    }
+
+    .task-card::after {
+      content: "";
+
+      position: absolute;
+      width: 110px;
+      height: 110px;
+
+      right: -28px;
+      top: -28px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(131, 114, 255, 0.22),
+          transparent 70%
+        );
+
+      pointer-events: none;
+    }
+
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .task-icon {
+      width: 53px;
+      height: 53px;
+      border-radius: 18px;
+
+      display: grid;
+      place-items: center;
+
+      font-size: 24px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #252844,
+          #171A29
+        );
+
+      border: 1px solid #343852;
+    }
+
+    .task-name {
+      margin-top: 1px;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .task-desc {
+      margin-top: 5px;
+      color: #888D9E;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .task-rate {
+      white-space: nowrap;
+
+      padding: 8px 10px;
+      border-radius: 12px;
+
+      background: rgba(126, 107, 255, 0.13);
+      color: #AEA4FF;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .task-progress {
+      margin-top: 18px;
+    }
+
+    .progress-line {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #20232F;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          #8B79FF,
+          #5F4FE4
+        );
+
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+
+      margin-top: 8px;
+
+      color: #777C8C;
+      font-size: 11px;
+    }
+
+    .start-task {
+      width: 100%;
+      margin-top: 18px;
+      min-height: 50px;
+
+      border-radius: 16px;
+
+      background: #F2F0FF;
+      color: #4B3FB5;
+
+      font-weight: 900;
+    }
+
+    /* ========================================
+       STATS
+    ======================================== */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      min-height: 122px;
+
+      border-radius: 22px;
+
+      background: #11131B;
+      border: 1px solid #242735;
+    }
+
+    .stat-icon {
+      font-size: 20px;
+      opacity: 0.85;
+    }
+
+    .stat-value {
+      margin-top: 12px;
+
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .stat-label {
+      margin-top: 5px;
+
+      color: #777C8C;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .history-box {
+      margin-top: 18px;
+
+      padding: 18px;
+      border-radius: 22px;
+
+      background: #11131B;
+      border: 1px solid #242735;
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 13px 0;
+
+      border-bottom: 1px solid #1F222E;
+    }
+
+    .history-row:last-child {
+      border-bottom: 0;
+    }
+
+    .history-left strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .history-left span {
+      display: block;
+
+      margin-top: 4px;
+
+      color: #6F7484;
+      font-size: 10px;
+    }
+
+    .history-right {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .pending {
+      color: #B1A8FF;
+    }
+
+    /* ========================================
+       PROFILE
+    ======================================== */
+
+    .profile-card {
+      text-align: center;
+
+      padding: 26px 20px;
+
+      border-radius: 28px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #141724,
+          #0E1018
+        );
+
+      border: 1px solid #292C3D;
+    }
+
+    .profile-avatar {
+      width: 82px;
+      height: 82px;
+      border-radius: 28px;
+
+      margin: 0 auto;
+
+      display: grid;
+      place-items: center;
+
+      background:
+        linear-gradient(
+          145deg,
+          #8271FF,
+          #5142CC
+        );
+
+      font-size: 24px;
+      font-weight: 900;
+
+      box-shadow:
+        0 16px 35px rgba(92, 73, 225, 0.28);
+    }
+
+    .profile-name {
+      margin-top: 14px;
+
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .profile-role {
+      display: inline-block;
+
+      margin-top: 6px;
+      padding: 7px 11px;
+
+      border-radius: 999px;
+
+      background: #1A1D2A;
+      color: #AAA4D7;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .profile-menu {
+      margin-top: 14px;
+
+      display: grid;
+      gap: 10px;
+    }
+
+    .profile-action {
+      width: 100%;
+      min-height: 56px;
+
+      padding: 0 17px;
+
+      border-radius: 18px;
+
+      display: flex;
+      align-items: center;
+      gap: 13px;
+
+      text-align: left;
+
+      background: #11131B;
+      border: 1px solid #242735;
+
+      color: #E6E7ED;
+
+      font-weight: 800;
+    }
+
+    .profile-action span {
+      display: block;
+    }
+
+    .profile-action small {
+      display: block;
+
+      margin-top: 3px;
+
+      color: #73788A;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    /* ========================================
+       DRAW
+    ======================================== */
+
+    .draw-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+
+      background: #151722;
+      border: 1px solid #282B3A;
+
+      color: #FFFFFF;
+
+      font-size: 19px;
+    }
+
+    .draw-title {
+      flex: 1;
+    }
+
+    .draw-title strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .draw-title span {
+      display: block;
+
+      color: #74798A;
+
+      margin-top: 3px;
+      font-size: 11px;
+    }
+
+    .letter-card {
+      position: relative;
+
+      width: 100%;
+      min-height: 430px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 30px;
+
+      background:
+        radial-gradient(
+          circle at 50% 20%,
+          rgba(122, 106, 255, 0.10),
+          transparent 42%
+        ),
+        #10121A;
+
+      border: 1px solid #292C3B;
+
+      overflow: hidden;
+    }
+
+    .target-letter {
+      position: absolute;
+
+      color: rgba(133, 119, 255, 0.18);
+
+      font-size: min(270px, 58vw);
+      line-height: 1;
+
+      font-weight: 900;
+
+      user-select: none;
+      pointer-events: none;
+    }
+
+    #drawCanvas {
+      position: absolute;
+
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .draw-help {
+      margin-top: 11px;
+
+      text-align: center;
+
+      color: #7B8090;
+      font-size: 11px;
+    }
+
+    .draw-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+
+      margin-top: 15px;
+    }
+
+    .clear-draw,
+    .ready-draw {
+      min-height: 52px;
+      border-radius: 17px;
+      font-weight: 900;
+    }
+
+    .clear-draw {
+      background: #171923;
+      color: #B6B9C7;
+      border: 1px solid #292C3A;
+    }
+
+    .ready-draw {
+      background:
+        linear-gradient(
+          135deg,
+          #8978FF,
+          #5E4FDE
+        );
+
+      color: #FFFFFF;
+    }
+
+    /* ========================================
+       WITHDRAW MODAL
+    ======================================== */
+
+    .modal {
+      position: fixed;
+
+      inset: 0;
+
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+
+      padding:
+        14px
+        14px
+        calc(14px + env(safe-area-inset-bottom));
+
+      background:
+        rgba(0, 0, 0, 0.67);
+
+      z-index: 100;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 620px;
+
+      padding: 22px;
+
+      border-radius: 28px 28px 22px 22px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #171A26,
+          #0F1119
+        );
+
+      border: 1px solid #2A2E40;
+
+      box-shadow:
+        0 -15px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-handle {
+      width: 42px;
+      height: 4px;
+      border-radius: 999px;
+
+      margin: 0 auto 20px;
+
+      background: #3A3E4C;
+    }
+
+    .modal-title {
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .modal-sub {
+      margin-top: 5px;
+
+      color: #7C8190;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .field {
+      margin-top: 17px;
+    }
+
+    .field label {
+      display: block;
+
+      margin-bottom: 8px;
+
+      color: #979BAA;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .field input {
+      width: 100%;
+      height: 52px;
+
+      padding: 0 15px;
+
+      border-radius: 16px;
+
+      outline: none;
+
+      background: #0C0E14;
+      border: 1px solid #2A2D3A;
+
+      color: #FFFFFF;
+
+      font-size: 15px;
+    }
+
+    .field input:focus {
+      border-color: #7666F2;
+    }
+
+    .withdraw-info {
+      margin-top: 13px;
+      padding: 13px;
+
+      border-radius: 15px;
+
+      background: #141722;
+
+      color: #989DAE;
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .withdraw-submit {
+      width: 100%;
+      min-height: 53px;
+
+      margin-top: 17px;
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #8978FF,
+          #5E4FDE
+        );
+
+      color: #FFFFFF;
+      font-weight: 900;
+    }
+
+    .withdraw-close {
+      width: 100%;
+      min-height: 48px;
+
+      margin-top: 9px;
+
+      border-radius: 16px;
+
+      background: #171A23;
+      border: 1px solid #282C38;
+
+      color: #A6A9B7;
+
+      font-weight: 800;
+    }
+/* ========================================
+       TOAST
+    ======================================== */
+
+    .toast {
+      position: fixed;
+
+      left: 50%;
+      bottom: 88px;
+
+      transform:
+        translate(-50%, 18px);
+
+      width: max-content;
+      max-width: calc(100vw - 36px);
+
+      padding: 13px 17px;
+
+      border-radius: 15px;
+
+      background: #F0EEFF;
+      color: #3F3697;
+
+      font-size: 12px;
+      font-weight: 800;
+
+      opacity: 0;
+      pointer-events: none;
+
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+
+      transform:
+        translate(-50%, 0);
+    }
+
+    /* ========================================
+       RESPONSIVE
+    ======================================== */
+
+    @media (max-width: 380px) {
+      .app {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .balance-value {
+        font-size: 30px;
+      }
+
+      .letter-card {
+        min-height: 390px;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <div class="app">
+
+    <!-- ====================================
+         HOME
+    ===================================== -->
+    <section
+      id="homeScreen"
+      class="screen active"
+    >
+
+      <div class="top">
+
+        <div class="brand">
+
+          <div class="brand-icon">
+            H
+          </div>
+
+          <div>
+            <div class="brand-title">
+              Lipton Harf
+            </div>
+
+            <div class="brand-sub">
+              Raqamlashtirish platformasi
+            </div>
+          </div>
+
+        </div>
+
+        <div
+          class="avatar"
+          id="topAvatar"
+          type="button"
+          aria-label="Profil"
+        >
+          MU
+        </div>
+
+      </div>
+
+
+      <div class="balance-card">
+
+        <div class="balance-label">
+          Mavjud balans
+        </div>
+
+        <div
+          class="balance-value"
+          id="balanceValue"
+        >
+          0
+        </div>
+
+        <div class="balance-unit">
+          so'm
+        </div>
+
+        <div class="balance-row">
+
+          <button
+            class="action-btn"
+            id="withdrawOpen"
+          >
+            Pul yechish
+          </button>
+
+          <button
+            class="secondary-btn"
+            id="statsOpen"
+          >
+            Statistika
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-head">
+
+        <div class="section-title">
+          Mavjud topshiriq
+        </div>
+
+        <div class="section-muted">
+          1 ta
+        </div>
+
+      </div>
+
+
+      <div class="task-card">
+
+        <div class="task-top">
+
+          <div
+            style="display:flex;gap:12px;align-items:flex-start;"
+          >
+
+            <div class="task-icon">
+              Aa
+            </div>
+
+            <div>
+
+              <div class="task-name">
+                Qo‘l yozuvi
+              </div>
+
+              <div class="task-desc">
+                Berilgan harfni barmoq bilan chizing.
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="task-rate">
+            +5 000 so'm
+          </div>
+
+        </div>
+
+
+        <div class="task-progress">
+
+          <div class="progress-line">
+            <div
+              class="progress-fill"
+              id="homeProgress"
+            ></div>
+          </div>
+
+          <div class="progress-text">
+
+            <span id="homeProgressText">
+              0 / 130 000 so'm
+            </span>
+
+            <span>
+              26 harf
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="start-task"
+          id="startTask"
+        >
+          Boshlash
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ====================================
+         STATS
+    ===================================== -->
+    <section
+      id="statsScreen"
+      class="screen"
+    >
+
+      <div class="page-header">
+
+        <button
+          class="page-back"
+          id="statsBack"
+          type="button"
+          aria-label="Orqaga"
+        >
+          ←
+        </button>
+
+        <div class="page-header-main">
+          <div class="section-title">
+            Statistika
+          </div>
+
+          <div class="brand-sub">
+            Faoliyatingiz
+          </div>
+        </div>
+
+        <div
+          class="avatar"
+          id="statsAvatar"
+        >
+          MU
+        </div>
+
+      </div>
+
+
+      <div class="stats-grid">
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            ₿
+          </div>
+
+          <div
+            class="stat-value"
+            id="statEarned"
+          >
+            0
+          </div>
+
+          <div class="stat-label">
+            Jami ishlangan
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            ✍
+          </div>
+
+          <div
+            class="stat-value"
+            id="statLetters"
+          >
+            0
+          </div>
+
+          <div class="stat-label">
+            Raqamlashtirilgan harflar
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            ✓
+          </div>
+
+          <div
+            class="stat-value"
+            id="statTasks"
+          >
+            0
+          </div>
+
+          <div class="stat-label">
+            Bajarilgan topshiriqlar
+          </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            ★
+          </div>
+
+          <div class="stat-value">
+            1
+          </div>
+
+          <div class="stat-label">
+            Boshlang‘ich — 1-daraja
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="history-box">
+
+        <div class="section-title">
+          Yechib olish tarixi
+        </div>
+
+        <div id="historyList"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ====================================
+         PROFILE
+    ===================================== -->
+    <section
+      id="profileScreen"
+      class="screen"
+    >
+
+      <div class="page-header">
+
+        <button
+          class="page-back"
+          id="profileBack"
+          type="button"
+          aria-label="Orqaga"
+        >
+          ←
+        </button>
+
+        <div class="page-header-main">
+          <div class="section-title">
+            Profil
+          </div>
+
+          <div class="brand-sub">
+            Shaxsiy hisob
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="profile-card">
+
+        <div
+          class="profile-avatar"
+          id="profileAvatar"
+        >
+          MU
+        </div>
+
+        <div
+          class="profile-name"
+          id="profileName"
+        >
+          Muhammadjon
+        </div>
+
+        <div class="profile-role">
+          Ijrochi
+        </div>
+
+      </div>
+
+
+      <div class="profile-menu">
+
+        <button
+          class="profile-action"
+          id="profileWithdraw"
+        >
+
+          <span style="font-size:20px;">
+            💳
+          </span>
+
+          <span>
+            <span>
+              Pul yechib olish
+            </span>
+
+            <small>
+              Balansdan karta hisobiga yechish
+            </small>
+          </span>
+
+        </button>
+
+
+        <button
+          class="profile-action"
+          id="profileHistory"
+        >
+
+          <span style="font-size:20px;">
+            🧾
+          </span>
+
+          <span>
+            <span>
+              Yechib olish tarixi
+            </span>
+
+            <small>
+              Oldingi so‘rovlarni ko‘rish
+            </small>
+          </span>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ====================================
+         DRAW
+    ===================================== -->
+    <section
+      id="drawScreen"
+      class="screen"
+    >
+
+      <div class="draw-head">
+
+        <button
+          class="back-btn"
+          id="drawBack"
+        >
+          ←
+        </button>
+
+        <div class="draw-title">
+
+          <strong id="letterCounter">
+            Harf 1 / 26
+          </strong>
+
+          <span>
+            Harfni barmog‘ingiz bilan chizing
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="letter-card">
+
+        <div
+          class="target-letter"
+          id="targetLetter"
+        >
+          А
+        </div>
+
+        <canvas
+          id="drawCanvas"
+        ></canvas>
+
+      </div>
+
+
+      <div class="draw-help">
+        To‘g‘ri yoki noto‘g‘ri tekshirilmaydi — chizib bo‘lgach “Tayyor”ni bosing.
+      </div>
+
+
+      <div class="draw-actions">
+
+        <button
+          class="clear-draw"
+          id="clearDraw"
+        >
+          Tozalash
+        </button>
+
+        <button
+          class="ready-draw"
+          id="readyDraw"
+        >
+          Tayyor +5 000
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- ======================================
+       BOTTOM NAV
+  ======================================= -->
+<!-- ======================================
+       WITHDRAW MODAL
+  ======================================= -->
+
+  <div
+    class="modal"
+    id="withdrawModal"
+  >
+
+    <div class="modal-card">
+
+      <div class="modal-handle"></div>
+
+      <div class="modal-title">
+        Pul yechib olish
+      </div>
+
+      <div class="modal-sub">
+        Karta raqami va yechib olinadigan summani kiriting.
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Karta raqami
+        </label>
+
+        <input
+          id="cardNumber"
+          type="tel"
+          inputmode="numeric"
+          maxlength="19"
+          placeholder="8600 0000 0000 0000"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Summa
+        </label>
+
+        <input
+          id="withdrawAmount"
+          type="number"
+          inputmode="numeric"
+          placeholder="0"
+        >
+
+      </div>
+
+
+      <div class="withdraw-info">
+
+        Mavjud balans:
+        <strong id="withdrawBalance">
+          0 so'm
+        </strong>
+
+        <br>
+
+        So‘rov yuborilgandan keyin summa balansdan ayriladi.
+        Haqiqiy karta o‘tkazmasi uchun to‘lov provayderi API ulanishi kerak.
+
+      </div>
+
+
+      <button
+        class="withdraw-submit"
+        id="withdrawSubmit"
+      >
+        Yechib olish so‘rovini yuborish
+      </button>
+
+
+      <button
+        class="withdraw-close"
+        id="withdrawClose"
+      >
+        Bekor qilish
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================
+       TOAST
+  ======================================= -->
+
+  <div
+    class="toast"
+    id="toast"
+  >
+  </div>
+
+
+  <script>
+
+    /* =====================================
+       TELEGRAM
+    ===================================== */
+
+    const tg =
+      window.Telegram?.WebApp || null;
+
+    if (tg) {
+      try {
+        tg.ready();
+        tg.expand();
+      } catch (error) {
+        console.log(
+          "Telegram WebApp:",
+          error.message
+        );
+      }
+    }
+
+
+    /* =====================================
+       DATA
+    ===================================== */
+
+    const letters = [
+      "А",
+      "Б",
+      "Д",
+      "Е",
+      "Ф",
+      "Г",
+      "Ҳ",
+      "И",
+      "Ж",
+      "К",
+      "Л",
+      "М",
+      "Н",
+      "О",
+      "П",
+      "Қ",
+      "Р",
+      "С",
+      "Т",
+      "У",
+      "В",
+      "Х",
+      "Й",
+      "З",
+      "Ч",
+      "Ш"
+    ];
+
+    const LETTER_REWARD = 5000;
+    const TASK_TARGET = 130000;
+
+
+    let currentLetterIndex = 0;
+
+    let userData = null;
+
+    let telegramUser = null;
+
+    let drawing = false;
+
+
+    /* =====================================
+       DOM
+    ===================================== */
+
+    const screens = [
+      document.getElementById("homeScreen"),
+      document.getElementById("statsScreen"),
+      document.getElementById("profileScreen"),
+      document.getElementById("drawScreen")
+    ];
+const canvas =
+      document.getElementById("drawCanvas");
+
+    const ctx =
+      canvas.getContext("2d");
+
+
+    /* =====================================
+       TELEGRAM USER
+    ===================================== */
+
+    function getTelegramUser() {
+
+      const fromTelegram =
+        tg?.initDataUnsafe?.user;
+
+      if (fromTelegram) {
+        return fromTelegram;
+      }
+
+
+      /*
+        Telegram tashqarisida test qilinsa,
+        demo foydalanuvchi ishlatiladi.
+      */
+
+      return {
+        id: 999999999,
+
+        first_name: "Muhammadjon",
+
+        last_name: "",
+
+        username: "demo"
+      };
+    }
+
+
+    telegramUser =
+      getTelegramUser();
+
+
+    /* =====================================
+       NAME
+    ===================================== */
+
+    function fullName(user) {
+
+      if (!user) {
+        return "Foydalanuvchi";
+      }
+
+      const first =
+        String(
+          user.first_name || ""
+        ).trim();
+
+      const last =
+        String(
+          user.last_name || ""
+        ).trim();
+
+      return (
+        `${first} ${last}`.trim() ||
+        user.username ||
+        "Foydalanuvchi"
+      );
+    }
+
+
+    function initials(name) {
+
+      const parts =
+        String(name)
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean);
+
+      if (!parts.length) {
+        return "US";
+      }
+
+      if (parts.length === 1) {
+        return parts[0]
+          .slice(0, 2)
+          .toUpperCase();
+      }
+
+      return (
+        parts[0][0] +
+        parts[parts.length - 1][0]
+      ).toUpperCase();
+    }
+
+
+    /* =====================================
+       NUMBER
+    ===================================== */
+
+    function money(value) {
+
+      return Number(
+        value || 0
+      ).toLocaleString("uz-UZ");
+    }
+
+
+    /* =====================================
+       TOAST
+    ===================================== */
+
+    let toastTimer = null;
+
+    function showToast(message) {
+
+      const toast =
+        document.getElementById("toast");
+
+      toast.textContent =
+        message;
+
+      toast.classList.add("show");
+
+      clearTimeout(
+        toastTimer
+      );
+
+      toastTimer =
+        setTimeout(
+          () => {
+            toast.classList.remove(
+              "show"
+            );
+          },
+          2600
+        );
+    }
+
+
+    /* =====================================
+       API
+    ===================================== */
+
+    async function api(
+      path,
+      options = {}
+    ) {
+
+      const response =
+        await fetch(
+          path,
+          {
+            headers: {
+              "content-type":
+                "application/json"
+            },
+
+            ...options
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.message ||
+          "Server xatosi"
+        );
+      }
+
+
+      return data;
+    }
+
+
+    /* =====================================
+       LOAD USER
+    ===================================== */
+
+    async function loadUser() {
+
+      try {
+
+        const result =
+          await api(
+            "/api/me",
+            {
+              method: "POST",
+
+              body:
+                JSON.stringify({
+                  telegramUser
+                })
+            }
+          );
+
+
+        if (
+          result?.ok &&
+          result.user
+        ) {
+
+          userData =
+            result.user;
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "User load:",
+          error
+        );
+
+        showToast(
+          "Server bilan ulanishda xato."
+        );
+
+      }
+
+
+      renderAll();
+
+    }
+
+
+    /* =====================================
+       RENDER
+    ===================================== */
+
+    function renderAll() {
+
+      if (!userData) {
+        return;
+      }
+
+
+      const name =
+        userData.name ||
+        fullName(
+          telegramUser
+        );
+
+
+      const avatar =
+        initials(name);
+
+
+      /* Top avatar */
+      document.getElementById(
+        "topAvatar"
+      ).textContent =
+        avatar;
+
+
+      document.getElementById(
+        "statsAvatar"
+      ).textContent =
+        avatar;
+
+
+      document.getElementById(
+        "profileAvatar"
+      ).textContent =
+        avatar;
+
+
+      /* Profile name */
+      document.getElementById(
+        "profileName"
+      ).textContent =
+        name;
+
+
+      /* Balance */
+      document.getElementById(
+        "balanceValue"
+      ).textContent =
+        money(
+          userData.balance
+        );
+
+
+      /* Home task */
+      const earned =
+        Number(
+          userData.taskEarned || 0
+        );
+
+
+      const percent =
+        Math.min(
+          100,
+          Math.round(
+            earned /
+            TASK_TARGET *
+            100
+          )
+        );
+
+
+      document.getElementById(
+        "homeProgress"
+      ).style.width =
+        `${percent}%`;
+
+
+      document.getElementById(
+        "homeProgressText"
+      ).textContent =
+        `${money(earned)} / ${money(TASK_TARGET)} so'm`;
+
+
+      /* Stats */
+      document.getElementById(
+        "statEarned"
+      ).textContent =
+        `${money(userData.taskEarned)} so'm`;
+
+
+      document.getElementById(
+        "statLetters"
+      ).textContent =
+        money(
+          userData.digitizedLetters
+        );
+
+
+      document.getElementById(
+        "statTasks"
+      ).textContent =
+        money(
+          userData.completedTasks
+        );
+
+
+      /* Withdraw */
+      document.getElementById(
+        "withdrawBalance"
+      ).textContent =
+        `${money(userData.balance)} so'm`;
+
+
+      renderHistory();
+
+
+      /*
+        Topshiriq tugagan bo'lsa:
+        "Qayta boshlash" deb ko'rsatamiz.
+      */
+
+      const startButton =
+        document.getElementById(
+          "startTask"
+        );
+
+
+      startButton.textContent =
+        userData.taskCompleted
+          ? "Yana boshlash"
+          : "Boshlash";
+    }
+
+
+    /* =====================================
+       HISTORY
+    ===================================== */
+
+    function renderHistory() {
+
+      const box =
+        document.getElementById(
+          "historyList"
+        );
+
+
+      const items =
+        Array.isArray(
+          userData?.withdrawals
+        )
+          ? userData.withdrawals
+          : [];
+
+
+      if (!items.length) {
+
+        box.innerHTML = `
+          <div
+            style="
+              padding:18px 0;
+              color:#666B7B;
+              font-size:11px;
+              text-align:center;
+            "
+          >
+            Hozircha yechib olish tarixi yo‘q.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      box.innerHTML =
+        items
+          .map(
+            item => {
+
+              const date =
+                new Date(
+                  item.createdAt
+                ).toLocaleString(
+                  "uz-UZ"
+                );
+
+
+              return `
+                <div class="history-row">
+
+                  <div class="history-left">
+
+                    <strong>
+                      ${money(item.amount)} so'm
+                    </strong>
+
+                    <span>
+                      ${item.card || "Karta"}
+                      · ${date}
+                    </span>
+
+                  </div>
+
+                  <div
+                    class="history-right pending"
+                  >
+                    ${item.status === "pending"
+                      ? "Kutilmoqda"
+                      : item.status}
+                  </div>
+
+                </div>
+              `;
+            }
+          )
+          .join("");
+    }
+
+
+    /* =====================================
+       SCREEN
+    ===================================== */
+
+    function showScreen(id) {
+
+      screens.forEach(
+        screen => {
+
+          screen.classList.toggle(
+            "active",
+            screen.id === id
+          );
+
+        }
+      );
+
+
+      navButtons.forEach(
+        button => {
+
+          const isActive =
+            button.dataset.screen === id;
+
+          button.classList.toggle(
+            "active",
+            isActive
+          );
+
+        }
+      );
+
+
+      window.scrollTo(
+        0,
+        0
+      );
+    }
+document.getElementById(
+  "topAvatar"
+).addEventListener(
+  "click",
+  () => {
+
+    showScreen(
+      "profileScreen"
+    );
+
+  }
+);
+
+
+    document.getElementById(
+      "statsBack"
+    ).addEventListener(
+      "click",
+      () => {
+        showScreen("homeScreen");
+      }
+    );
+
+
+    document.getElementById(
+      "profileBack"
+    ).addEventListener(
+      "click",
+      () => {
+        showScreen("homeScreen");
+      }
+    );
+
+
+    /* =====================================
+       CANVAS
+    ===================================== */
+
+    function resizeCanvas() {
+
+      const rect =
+        canvas.getBoundingClientRect();
+
+
+      const ratio =
+        window.devicePixelRatio ||
+        1;
+
+
+      canvas.width =
+        Math.round(
+          rect.width * ratio
+        );
+
+
+      canvas.height =
+        Math.round(
+          rect.height * ratio
+        );
+
+
+      ctx.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+      );
+
+
+      ctx.lineCap =
+        "round";
+
+      ctx.lineJoin =
+        "round";
+
+      ctx.lineWidth =
+        7;
+
+      ctx.strokeStyle =
+        "#A99EFF";
+    }
+
+
+    function clearCanvas() {
+
+      const rect =
+        canvas.getBoundingClientRect();
+
+
+      ctx.clearRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+      );
+
+    }
+
+
+    function pointerPosition(event) {
+
+      const rect =
+        canvas.getBoundingClientRect();
+
+
+      return {
+        x:
+          event.clientX -
+          rect.left,
+
+        y:
+          event.clientY -
+          rect.top
+      };
+    }
+
+
+    canvas.addEventListener(
+      "pointerdown",
+      event => {
+
+        drawing = true;
+
+        canvas.setPointerCapture(
+          event.pointerId
+        );
+
+
+        const p =
+          pointerPosition(event);
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+          p.x,
+          p.y
+        );
+
+      }
+    );
+
+
+    canvas.addEventListener(
+      "pointermove",
+      event => {
+
+        if (!drawing) {
+          return;
+        }
+
+
+        const p =
+          pointerPosition(event);
+
+
+        ctx.lineTo(
+          p.x,
+          p.y
+        );
+
+
+        ctx.stroke();
+
+      }
+    );
+
+
+    function stopDrawing() {
+
+      drawing = false;
+
+      ctx.closePath();
+
+    }
+
+
+    canvas.addEventListener(
+      "pointerup",
+      stopDrawing
+    );
+
+    canvas.addEventListener(
+      "pointercancel",
+      stopDrawing
+    );
+
+    canvas.addEventListener(
+      "pointerleave",
+      stopDrawing
+    );
+
+
+    /* =====================================
+       START TASK
+    ===================================== */
+
+    document.getElementById(
+      "startTask"
+    ).addEventListener(
+      "click",
+      async () => {
+
+        try {
+
+          if (
+            userData?.taskCompleted
+          ) {
+
+            const result =
+              await api(
+                "/api/reset-task",
+                {
+                  method: "POST",
+
+                  body:
+                    JSON.stringify({
+                      telegramUser
+                    })
+                }
+              );
+
+
+            if (
+              result?.ok &&
+              result.user
+            ) {
+              userData =
+                result.user;
+            }
+
+          }
+
+
+          currentLetterIndex = 0;
+
+          openDrawScreen();
+
+        } catch (error) {
+
+          showToast(
+            error.message
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       DRAW SCREEN
+    ===================================== */
+
+    function openDrawScreen() {
+
+      currentLetterIndex = 0;
+
+      showScreen(
+        "drawScreen"
+      );
+
+      resizeCanvas();
+
+      clearCanvas();
+
+      renderLetter();
+    }
+
+
+    function renderLetter() {
+
+      const letter =
+        letters[
+          currentLetterIndex
+        ];
+
+
+      document.getElementById(
+        "targetLetter"
+      ).textContent =
+        letter;
+
+
+      document.getElementById(
+        "letterCounter"
+      ).textContent =
+        `Harf ${currentLetterIndex + 1} / ${letters.length}`;
+
+
+      resizeCanvas();
+
+      clearCanvas();
+    }
+
+
+    document.getElementById(
+      "drawBack"
+    ).addEventListener(
+      "click",
+      () => {
+
+        showScreen(
+          "homeScreen"
+        );
+
+      }
+    );
+
+
+    document.getElementById(
+      "clearDraw"
+    ).addEventListener(
+      "click",
+      () => {
+
+        clearCanvas();
+
+      }
+    );
+
+
+    /* =====================================
+       READY
+    ===================================== */
+
+    document.getElementById(
+      "readyDraw"
+    ).addEventListener(
+      "click",
+      async () => {
+
+        const readyButton =
+          document.getElementById(
+            "readyDraw"
+          );
+
+
+        readyButton.disabled = true;
+
+        readyButton.textContent =
+          "Saqlanmoqda...";
+
+
+        try {
+
+          const result =
+            await api(
+              "/api/letter-complete",
+              {
+                method: "POST",
+
+                body:
+                  JSON.stringify({
+                    telegramUser
+                  })
+              }
+            );
+
+
+          if (
+            result?.ok &&
+            result.user
+          ) {
+
+            userData =
+              result.user;
+
+          }
+
+
+          /*
+            Oxirgi harf:
+            130000 / 130000
+          */
+
+          if (
+            result.taskFinished ||
+            userData.taskCompleted
+          ) {
+
+            renderAll();
+
+            showScreen(
+              "homeScreen"
+            );
+
+
+            showToast(
+              "🎉 130 000 / 130 000 so'm! Topshiriq tugadi."
+            );
+
+
+            return;
+          }
+
+
+          /*
+            Keyingi harf
+          */
+
+          currentLetterIndex++;
+
+
+          if (
+            currentLetterIndex >=
+            letters.length
+          ) {
+
+            /*
+              26 × 5000 = 130000
+            */
+
+            renderAll();
+
+            showScreen(
+              "homeScreen"
+            );
+
+
+            showToast(
+              "🎉 130 000 so'm ishladingiz!"
+            );
+
+
+            return;
+          }
+
+
+          renderAll();
+
+          renderLetter();
+
+        } catch (error) {
+
+          showToast(
+            error.message
+          );
+
+        } finally {
+
+          readyButton.disabled =
+            false;
+
+          readyButton.textContent =
+            "Tayyor +5 000";
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       WITHDRAW
+    ===================================== */
+
+    const withdrawModal =
+      document.getElementById(
+        "withdrawModal"
+      );
+
+
+    function openWithdraw() {
+
+      renderAll();
+
+      document.getElementById(
+        "withdrawAmount"
+      ).value =
+        userData?.balance || "";
+
+
+      withdrawModal.classList.add(
+        "open"
+      );
+
+    }
+
+
+    function closeWithdraw() {
+
+      withdrawModal.classList.remove(
+        "open"
+      );
+
+    }
+
+
+    document.getElementById(
+      "withdrawOpen"
+    ).addEventListener(
+      "click",
+      openWithdraw
+    );
+
+
+    document.getElementById(
+      "profileWithdraw"
+    ).addEventListener(
+      "click",
+      openWithdraw
+    );
+
+
+    document.getElementById(
+      "withdrawClose"
+    ).addEventListener(
+      "click",
+      closeWithdraw
+    );
+
+
+    withdrawModal.addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target ===
+          withdrawModal
+        ) {
+          closeWithdraw();
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       CARD FORMAT
+    ===================================== */
+
+    document.getElementById(
+      "cardNumber"
+    ).addEventListener(
+      "input",
+      event => {
+
+        let value =
+          event.target.value
+            .replace(/\D/g, "")
+            .slice(0, 19);
+
+
+        event.target.value =
+          value.replace(
+            /(.{4})/g,
+            "$1 "
+          ).trim();
+
+      }
+    );
+
+
+    /* =====================================
+       WITHDRAW SUBMIT
+    ===================================== */
+
+    document.getElementById(
+      "withdrawSubmit"
+    ).addEventListener(
+      "click",
+      async () => {
+
+        const cardInput =
+          document.getElementById(
+            "cardNumber"
+          );
+
+
+        const amountInput =
+          document.getElementById(
+            "withdrawAmount"
+          );
+
+
+        const submit =
+          document.getElementById(
+            "withdrawSubmit"
+          );
+
+
+        const cardNumber =
+          cardInput.value
+            .replace(/\D/g, "");
+
+
+        const amount =
+          Number(
+            amountInput.value
+          );
+
+
+        if (
+          cardNumber.length < 16
+        ) {
+
+          showToast(
+            "Karta raqamini to‘liq kiriting."
+          );
+
+          return;
+        }
+
+
+        if (
+          !Number.isFinite(amount) ||
+          amount <= 0
+        ) {
+
+          showToast(
+            "Summani kiriting."
+          );
+
+          return;
+        }
+
+
+        if (
+          amount >
+          Number(userData?.balance || 0)
+        ) {
+
+          showToast(
+            "Balans yetarli emas."
+          );
+
+          return;
+        }
+
+
+        submit.disabled = true;
+
+        submit.textContent =
+          "Yuborilmoqda...";
+
+
+        try {
+
+          const result =
+            await api(
+              "/api/withdraw",
+              {
+                method: "POST",
+
+                body:
+                  JSON.stringify({
+                    telegramUser,
+
+                    cardNumber,
+
+                    amount
+                  })
+              }
+            );
+
+
+          if (
+            result?.ok &&
+            result.user
+          ) {
+
+            userData =
+              result.user;
+          }
+
+
+          renderAll();
+
+          closeWithdraw();
+
+
+          cardInput.value = "";
+
+          amountInput.value = "";
+
+
+          showToast(
+            "✅ Pul yechish so‘rovi qabul qilindi."
+          );
+
+
+          showScreen(
+            "statsScreen"
+          );
+
+        } catch (error) {
+
+          showToast(
+            error.message
+          );
+
+        } finally {
+
+          submit.disabled =
+            false;
+
+          submit.textContent =
+            "Yechib olish so‘rovini yuborish";
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       PROFILE HISTORY
+    ===================================== */
+
+    document.getElementById(
+      "profileHistory"
+    ).addEventListener(
+      "click",
+      () => {
+
+        showScreen(
+          "statsScreen"
+        );
+
+        setTimeout(
+          () => {
+
+            document
+              .querySelector(
+                ".history-box"
+              )
+              ?.scrollIntoView({
+                behavior: "smooth"
+              });
+
+          },
+          100
+        );
+
+      }
+    );
+
+
+    /* =====================================
+       QUICK STATS
+    ===================================== */
+
+    document.getElementById(
+      "statsOpen"
+    ).addEventListener(
+      "click",
+      () => {
+
+        showScreen(
+          "statsScreen"
+        );
+
+      }
+    );
+
+
+    /* =====================================
+       RESIZE
+    ===================================== */
+
+    window.addEventListener(
+      "resize",
+      () => {
+
+        if (
+          document
+            .getElementById(
+              "drawScreen"
+            )
+            .classList
+            .contains("active")
+        ) {
+
+          resizeCanvas();
+
+        }
+
+      }
+    );
+
+
+    /* =====================================
+       START
+    ===================================== */
+
+    loadUser();
+
+  </script>
+
+</body>
+</html>
